@@ -1,17 +1,24 @@
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://Me:<Nikoukou1>@cluster0-vv8ab.mongodb.net/test?retryWrites=true";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-const test = require("assert");
+const Express = require("express");
+const BodyParser = require("body-parser");
+const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectID;
+const CONNECTION_URL = "mongodb+srv://Me:<Nikoukou1>@cluster0-vv8ab.mongodb.net/test?retryWrites=true";
+const DATABASE_NAME = "film";
 
-MongoClient.connect(uri, function(err, db) {
-  // Get the collection
-  var col = db.collection('insert_many');
-  col.insertMany([{a:1}, {a:2}], function(err, r) {
-    test.equal(null, err);
-    test.equal(2, r.insertedCount);
-    // Finish up test
-    db.close();
-  });
+var app = Express();
+
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
+
+var database, collection;
+
+app.listen(3000, () => {
+    MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
+        if(error) {
+            throw error;
+        }
+        database = client.db(DATABASE_NAME);
+        collection = database.collection("denzel");
+        console.log("Connected to `" + DATABASE_NAME + "`!");
+    });
 });
-
-
