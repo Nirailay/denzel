@@ -30,22 +30,35 @@ app.listen(9292, () => {
 
 
 
-/*app.post("/movies/populate", (request, response) => {
-    collection.insert(request.body, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result.result);
-    });
-});*/
-
+// populate de database :  localhost:9292/movies/populate
 app.get("/movies/populate", async (request, response) => {
   const movies = await imdb(DENZEL_IMDB_ID);
-    
+
     collection.insertMany(movies, (error, result) => {
         if(error) {
             return response.status(500).send(error);
         }
         response.send(result.result);
+    });
+});
+
+/*
+app.get("/movies", async (request, response) => {
+
+    collection.insertMany(movies, (error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.send(result.result);
+    });
+});
+*/
+
+app.get("/movies/:id", (request, response) => {
+    collection.findOne({ "_id": new ObjectId(request.params.id) }, (error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.send(result);
     });
 });
