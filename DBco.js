@@ -42,20 +42,31 @@ app.get("/movies/populate", async (request, response) => {
     });
 });
 
-/*
-app.get("/movies", async (request, response) => {
+// localhost:9292/movies
+app.get("/movies", (request, response) => {
 
-    collection.insertMany(movies, (error, result) => {
+    collection.find({"metascore" : {"$gt" : 70}}).toArray((error, result) => {
+
         if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result.result);
-    });
-});
-*/
 
+            return response.status(500).send(error);
+
+        }
+
+        var nombre = Math.floor(Math.random() * Math.floor(result.length));
+
+        console.log(result[nombre]);
+
+        response.send(result[nombre]);
+
+    });
+
+});
+
+
+// localhost:9292/movies/5c87baa5200dd81ab4d5efa5
 app.get("/movies/:id", (request, response) => {
-    collection.findOne({ "_id": new ObjectId(request.params.id) }, (error, result) => {
+    collection.findOne({ "id":request.params.id }, (error, result) => {
         if(error) {
             return response.status(500).send(error);
         }
